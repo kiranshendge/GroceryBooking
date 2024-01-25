@@ -4,7 +4,7 @@ Roles:
   2. User
 
 Functionalities:
-1.Admin Responsibilities
+1. Admin Responsibilities
   - Add new grocery items to system
   - View existing grocery items
   - Remove grocery items from system
