@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"test1\",\r\n    \"email\": \"test1@gmail.com\",\r\n    \"password\": \"abc@123\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"abc@1234\",\r\n    \"role\": \"ADMIN\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -23,12 +23,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/auth/signUp",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/signUp",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
@@ -40,6 +38,18 @@
 				},
 				{
 					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var headerValue = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"authToken\", headerValue.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -53,12 +63,50 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/auth/login",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/login",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var headerValue = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"authToken\", headerValue.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"abc@1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localUrl}}/api/auth/login",
+							"host": [
+								"{{localUrl}}"
+							],
 							"path": [
 								"api",
 								"auth",
@@ -75,17 +123,15 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTcwNjAyMDkyOH0.BOqqdsGZxfwn5ncJwkCMkiB2OtwqPS37XEQKuHjhTls",
+								"value": "{{authToken}}",
 								"type": "default"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/api/auth/loggedInUser",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/loggedInUser",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
@@ -104,10 +150,16 @@
 					"name": "Add product",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"wheat\",\r\n    \"description\": \"wheat from Punjab\",\r\n    \"price\": \"40\",\r\n    \"tags\": [\"wheat, india\"],\r\n    \"quantity\": \"50\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Cashews\",\r\n    \"description\": \"Cashews from Konkan\",\r\n    \"price\": \"800\",\r\n    \"tags\": [\"Mango, india\"],\r\n    \"quantity\": \"50\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -115,12 +167,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/product",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/product",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"product"
@@ -137,23 +187,26 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"mango\",\n    \"description\": \"Mango from Konkan\",\n    \"price\": \"1500\",\n    \"tags\": [\"mango, Maharashtra\"],\n    \"quantity\": \"50\"\n}"
+							"raw": "{\n    \"quantity\": \"100\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/product/2",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/product/5",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"product",
-								"2"
+								"5"
 							]
 						}
 					},
@@ -163,14 +216,18 @@
 					"name": "get products",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/api/product?offset=0&limit=10",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/product?offset=0&limit=10",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"product"
@@ -193,18 +250,22 @@
 					"name": "product by id",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/api/product/1",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/product/4",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"product",
-								"1"
+								"4"
 							]
 						}
 					},
@@ -214,18 +275,22 @@
 					"name": "delete product",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/api/product/3",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/product/4",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"product",
-								"3"
+								"4"
 							]
 						}
 					},
@@ -240,10 +305,16 @@
 					"name": "Add Cart",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userId\": 2,\r\n    \"productId\": 2,\r\n    \"quantity\": 3\r\n}",
+							"raw": "{\r\n    \"productId\": 5,\r\n    \"quantity\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -251,12 +322,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/auth/addToCart",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/addToCart",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
@@ -270,14 +339,18 @@
 					"name": "Delete Cart",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/api/auth/deleteItem/1",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/deleteItem/1",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
@@ -292,7 +365,13 @@
 					"name": "update cart",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"quantity\": 3\r\n}",
@@ -303,17 +382,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/auth/updateQuantity/2",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/updateQuantity/1",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
 								"updateQuantity",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -323,19 +400,22 @@
 					"name": "get carts",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/api/auth/cart/2",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/cart",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
-								"cart",
-								"2"
+								"cart"
 							]
 						}
 					},
@@ -350,10 +430,16 @@
 					"name": "CreateOrder",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    userId: 2\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -361,12 +447,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/auth/order",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/order",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
@@ -380,19 +464,22 @@
 					"name": "order list",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/api/auth/orders/2",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/orderList",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
-								"orders",
-								"2"
+								"orderList"
 							]
 						}
 					},
@@ -402,14 +489,18 @@
 					"name": "order list by status",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/api/auth/orders?status=CANCELLED&limit=10&offset=0",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/orders?status=CANCELLED&limit=10&offset=0",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
@@ -437,19 +528,32 @@
 					"name": "Cancel order",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://localhost:3000/api/auth/order/1",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/order/2",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
 								"order",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -459,14 +563,18 @@
 					"name": "change status",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/api/auth/order/1/status?orderStatus=ACCEPTED",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/order/1/status?orderStatus=ACCEPTED",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
@@ -488,19 +596,23 @@
 					"name": "order by Id",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{authToken}}",
+								"type": "default"
+							}
+						],
 						"url": {
-							"raw": "http://localhost:3000/api/auth/order/1",
-							"protocol": "http",
+							"raw": "{{localUrl}}/api/auth/order/2",
 							"host": [
-								"localhost"
+								"{{localUrl}}"
 							],
-							"port": "3000",
 							"path": [
 								"api",
 								"auth",
 								"order",
-								"1"
+								"2"
 							]
 						}
 					},

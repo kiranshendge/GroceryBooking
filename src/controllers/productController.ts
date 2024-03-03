@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { IProductInteractor } from '../interfaces/IProductInteractor';
 import { inject, injectable } from 'inversify';
 import { INTERFACE_TYPE } from '../utils';
+import { STATUS_CODES } from '../exceptions/app_error';
+import { Product } from '../entities/product';
 
 @injectable()
 export class ProductController {
@@ -11,52 +13,52 @@ export class ProductController {
         this.interactor = interactor;
     }
 
-    async onCreateProduct(req: Request, res: Response, next: NextFunction) {
+    async onCreateProduct(req: Request, res: Response, next: NextFunction): Promise<any> {
         try {
           const data = await this.interactor.createProduct(req.body);
-          return res.status(200).json(data);
-        } catch (error) {
+          return res.status(STATUS_CODES.OK).json(data);
+        } catch (error: any) {
           next(error);
         }
       }
-      async onGetProducts(req: Request, res: Response, next: NextFunction) {
+      async onGetProducts(req: Request, res: Response, next: NextFunction): Promise<any> {
         try {
           const offset = parseInt(`${req.query.offset}`) || 0;
           const limit = parseInt(`${req.query.limit}`) || 10;
     
           const data = await this.interactor.getProducts(limit, offset);
     
-          return res.status(200).json(data);
-        } catch (error) {
+          return res.status(STATUS_CODES.OK).json(data);
+        } catch (error: any) {
           next(error);
         }
       }
-      async onUpdateProduct(req: Request, res: Response, next: NextFunction) {
+      async onUpdateProduct(req: Request, res: Response, next: NextFunction): Promise<any> {
         try {
           const id = parseInt(req.params.id);
           const product = req.body;
     
           const data = await this.interactor.updateProduct(id, product);
     
-          return res.status(200).json(data);
-        } catch (error) {
+          return res.status(STATUS_CODES.OK).json(data);
+        } catch (error: any) {
           next(error);
         }
       }
 
-      async onGetProductById(req: Request, res: Response, next: NextFunction) {
+      async onGetProductById(req: Request, res: Response, next: NextFunction): Promise<any> {
         try {
           const id = parseInt(req.params.id);
     
           const data = await this.interactor.getProductById(id);
     
-          return res.status(200).json(data);
-        } catch (error) {
+          return res.status(STATUS_CODES.OK).json(data);
+        } catch (error: any) {
           next(error);
         }
       }
 
-      async onDeleteProduct(req: Request, res: Response, next: NextFunction) {
+      async onDeleteProduct(req: Request, res: Response, next: NextFunction): Promise<any> {
         try {
           const id = parseInt(req.params.id);
     
@@ -65,8 +67,8 @@ export class ProductController {
             data = 'product removed successfully';
           }
     
-          return res.status(200).json(data);
-        } catch (error) {
+          return res.status(STATUS_CODES.OK).json(data);
+        } catch (error: any) {
           next(error);
         }
       }

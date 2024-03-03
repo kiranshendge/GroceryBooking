@@ -6,6 +6,8 @@ import { ProductRepository } from '../repositories/ProductRepository';
 import { IProductRepository } from '../interfaces/IProductRepository';
 import { INTERFACE_TYPE } from '../utils';
 import { Container } from 'inversify';
+import userMiddleware from '../middlewares/user';
+import adminMiddleware from '../middlewares/admin';
 
 const container = new Container();
 
@@ -17,11 +19,10 @@ const productRouter = express.Router();
 
 const controller = container.get<ProductController>(INTERFACE_TYPE.ProductController);
 
-productRouter.get('/', controller.onGetProducts.bind(controller));
-productRouter.post('/', controller.onCreateProduct.bind(controller));
-productRouter.put('/:id', controller.onUpdateProduct.bind(controller));
-productRouter.delete('/:id', controller.onDeleteProduct.bind(controller));
-productRouter.get('/:id', controller.onGetProductById.bind(controller));
-// productRouter.get('/search', controller.onSearchProduct.bind(controller));
+productRouter.get('/', [userMiddleware], controller.onGetProducts.bind(controller));
+productRouter.post('/', [userMiddleware, adminMiddleware], controller.onCreateProduct.bind(controller));
+productRouter.put('/:id', [userMiddleware, adminMiddleware], controller.onUpdateProduct.bind(controller));
+productRouter.delete('/:id', [userMiddleware, adminMiddleware], controller.onDeleteProduct.bind(controller));
+productRouter.get('/:id', [userMiddleware, adminMiddleware], controller.onGetProductById.bind(controller));
 
 export default productRouter;

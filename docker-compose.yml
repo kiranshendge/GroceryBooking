@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  # Mysql services
+  mysql_db:
+    container_name: db_container
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: groceryshopping
+      MYSQL_ROOT_PASSWORD: Password123
+    ports:
+      - 3309:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Node API service
+  api:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      PORT: 3000
+      DATABASE_URL: mysql://root:Password123@db_container:3306/groceryshopping?schema=public
+      JWT_SECRET: sewriwur93sdfslfjsl
+    depends_on:
+      - mysql_db
+
+volumes:
+  mysql_data: {}

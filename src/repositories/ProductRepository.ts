@@ -3,6 +3,7 @@ import { IProductRepository } from '../interfaces/IProductRepository';
 import { Product } from '../entities/product';
 import { injectable } from 'inversify';
 import { PrismaClient } from '@prisma/client';
+import { NotFoundError } from '../exceptions/app_error';
 
 @injectable()
 export class ProductRepository implements IProductRepository {
@@ -12,7 +13,7 @@ export class ProductRepository implements IProductRepository {
         this.prismaClient = new PrismaClient();
     }
     
-    async create(input: Product): Promise<any> {
+    async create(input: Product): Promise<Product> {
         const product = await this.prismaClient.product.create({
             data: {
                 ...input
@@ -22,13 +23,17 @@ export class ProductRepository implements IProductRepository {
     }
 
     async update(id: number, product: Product): Promise<Product> {
-        const updatedProduct = await this.prismaClient.product.update({
-            where : {
-                id: id
-            },
-            data: product
-        });
-        return updatedProduct;
+        try {
+            const updatedProduct = await this.prismaClient.product.update({
+                where : {
+                    id: id
+                },
+                data: product
+            });
+            return updatedProduct;
+        } catch (err: any) {
+            throw new NotFoundError('Product not found');
+        }
     }
 
     async find(limit: number, offset: number): Promise<any> {
@@ -45,20 +50,29 @@ export class ProductRepository implements IProductRepository {
     }
 
     async findById(id: number): Promise<Product> {
-        const product = await this.prismaClient.product.findFirstOrThrow({
-            where: {
-                id
-            }
-        });
-        return product;
+        try {
+            const product = await this.prismaClient.product.findFirstOrThrow({
+                where: {
+                    id
+                }
+            });
+            return product;
+        } catch (err: any) {
+            throw new NotFoundError('Product not found');
+        }
+        
     }
 
     async delete(id: number): Promise<any> {
-        await this.prismaClient.product.delete({
-            where: {
-                id
-            }
-        });
-        return 1;
+        try {
+            await this.prismaClient.product.delete({
+                where: {
+                    id
+                }
+            });
+            return 1;
+        } catch (err: any) {
+            throw new NotFoundError('Product not found');
+        }       
     }
 }

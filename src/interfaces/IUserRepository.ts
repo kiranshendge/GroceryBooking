@@ -1,7 +1,7 @@
 import { User } from "../entities/user";
 
-export interface IAuthRepository {
-    signUp(email: string, password: string, name: string) : Promise<User>;
+export interface IUserRepository {
+    signUp(email: string, password: string, name: string, role: any) : Promise<User>;
     findUser(criteria: string, value: any) : Promise<User | null>;
     create(cart: any): Promise<any>;
     delete(id: number): Promise<any>;
