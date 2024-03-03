@@ -15,4 +15,6 @@ Functionalities:
     - View list of available grocery items
     - Book multiple grocery items in a single order
 
-We have implemented using Nodejs, Express, Prisma (ORM) and MySQL. We have followed Clean architecture.
+We have implemented using Nodejs, Express, Prisma (ORM) and MySQL.
+Containerization is achieved using Docker Compose.
+For API endpoint details, Kindly find the postman collection "GroceryShopping.postman_collection".
